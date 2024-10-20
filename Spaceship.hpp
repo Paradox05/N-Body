@@ -1,15 +1,26 @@
 #ifndef SPACESHIP_HPP
 #define SPACESHIP_HPP
+
 #include "SpaceObject.hpp"
-#define MOVE_FACT 15
+#include <SFML/Graphics.hpp>
 
 class SpaceShip : public Universe::SpaceObject {
 public:
-explicit SpaceShip(sf::Vector2u winSize);
-void move(sf::Keyboard::Key direction);
+    // Constructor with window size as argument
+    explicit SpaceShip(sf::Vector2u winSize);
+
+    // Move the spaceship based on keyboard input and window size
+    void move(sf::Keyboard::Key direction, sf::Vector2u winSize);  // Updated signature
+
 private:
-virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
-sf::Sprite sprite_;
-sf::Texture texture_;
+    // Override the draw function to render the spaceship
+    virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+
+    // Sprite for spaceship
+    sf::Sprite sprite_;
+
+    // Texture for spaceship
+    sf::Texture texture_;
 };
-#endif
+
+#endif  // SPACESHIP_HPP

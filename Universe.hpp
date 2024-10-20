@@ -1,81 +1,109 @@
 #ifndef UNIVERSE_HPP_
 #define UNIVERSE_HPP_
-#include<SFML/Graphics.hpp>
-#include<SFML/Window.hpp>
-#include<SFML/System.hpp>
-#include<vector>
-#include<string>
-#include<sstream>
-#include<iomanip>
-#include"SpaceObject.hpp"
-#include"Spaceship.hpp"
-#include"body.hpp"
-#include"star.hpp"
-#include <ctime>
 
-namespace Universe 
-{
-class Universe 
-{
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
+#include <vector>
+#include <memory>
+#include "SpaceObject.hpp"
+#include "Spaceship.hpp"
+#include "body.hpp"
+
+namespace Universe {
+
+class Universe {
 public:
+    // Constructor
+    Universe(double rad, int size, std::vector<std::unique_ptr<Body>>& planetList);
 
-Universe(double rad, int size, std::vector<Body*>& planetList);
+    // Destructor
+    ~Universe();
 
-~Universe();
+    // Main simulation loop
+    void run();
 
-void run();
+    // Update the time text display
+    void setTextTime();
 
-sf::Vector2f translateCoordinates(float x, float y);
+    // Get elapsed time
+    int getElapsedTime() const;
 
-void printState();
+    // Set total simulation time
+    void setTotalTime(int time_);
 
-void setTextTime();
+    // Set step time for simulation
+    void setStepTime(double time_);
 
-int getElapsedTime() const;
+    // Transform the body coordinates
+    void transformBodies(Body&);
 
-void setTotalTime(int time_);
-
-void setStepTime(double time_);
-
-double getStepTime() {return step_time;}
-
-double getTotalTime() {return uni_total_times;}
-
-void transformBodies(Body&);
 private:
+    void printState();
+    // Initialize the vertex array for stars
+    void createStarVertexArray();
 
-void fetchBody();
+    // Update the universe by calculating forces, velocities, and positions
+    void updateUniverse();
 
-void fetchStar();
+    // Handle mouse clicks on planet sprites
+    void checkClickOnSprite();
 
-void drawStars();
+    // Set up the text and dialog box
+    void setUpTextAndDialog();
 
-void drawBodies();
+    // Update the dialog box with planet information
+    void updateDialog(Body* planet);
 
-void updateTime(int time);
+    // Handle spaceship movement
+    void shipMove(sf::Event::KeyEvent key);
 
-void updateUniverse();
+    // Update the simulation time
+    void updateTime(int time);
 
-void checkClickOnSprite();
-void setUpTextAndDialog();
+    // Window size (square window)
+    int winSize_; 
 
-void updateDialog(Body* planet);
+    // Total simulation time
+    int uni_total_times;
 
-void shipMove(sf::Event::KeyEvent key);
-int winSize_; 
-int uni_total_times; 
-double step_time;
-double uni_rad; 
-sf::RenderWindow window_;
-std::vector<Body*> bodyList_; 
-std::vector<Star> starList_; 
-SpaceShip* ship_; 
-int elapsedTime_;
-sf::Font fontTime_; 
-sf::Text textTime_; 
-sf::RectangleShape dialogBox_;
-sf::Text dialogText_; 
-Body* selectedPlanet_;
+    // Time step for the simulation
+    double step_time;
+
+    // Universe radius
+    double uni_rad;
+
+    // SFML window
+    sf::RenderWindow window_;
+
+    // List of bodies (planets, etc.)
+    std::vector<std::unique_ptr<Body>> bodyList_; 
+
+    // Vertex array for drawing stars efficiently
+    sf::VertexArray starVertices_;
+
+    // Spaceship pointer (managed via smart pointer)
+    std::unique_ptr<SpaceShip> ship_;
+
+    // Elapsed simulation time
+    int elapsedTime_;
+
+    // Font for text display
+    sf::Font fontTime_; 
+
+    // Text display for time
+    sf::Text textTime_;
+
+    // Rectangle shape for dialog box
+    sf::RectangleShape dialogBox_;
+
+    // Text inside the dialog box
+    sf::Text dialogText_;
+
+    // Pointer to the selected planet
+    Body* selectedPlanet_;
 };
-} 
-#endif 
+
+}  // namespace Universe
+
+#endif  // UNIVERSE_HPP_
